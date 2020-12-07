@@ -4,31 +4,27 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 // ----------------------Mainからpromiseへ画面遷移-----------------
-type MainNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Main"
->;
+type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
 
 //Props型を定義
 type Props = {
   navigation: MainNavigationProp;
 };
 export default function Main(props: Props) {
-
   const { navigation } = props;
   const topromise = () => {
     navigation.push("promise");
   };
   const toContact = () => {
-    navigation.push(("Contact"));
-  }
+    navigation.push("Contact");
+  };
   const toCheckList = () => {
     navigation.push("CheckList");
   };
   const tolifeHack = () => {
     navigation.push("lifeHack");
   };
-// ----------------------------------------------------------------
+  // ----------------------------------------------------------------
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={topromise}>
