@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { FlatList } from "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
-import { loadAll } from "./Store";
+import { loadAll, loadChecklist } from "./Store";
 import { FAB, List } from "react-native-paper";
 
 //functionの名前をファイル名とおなじになるように変更
@@ -14,16 +14,16 @@ type Props = {
   navigation: MainNavigationProp;
 };
 
-export default function CheckList(props: Props) {
-  const [CLs, setCLs] = useState<Checklistmemo[]>([]);
+export default function promise(props: Props) {
+  const [memos, setMemos] = useState<memo[]>([]);
 
   // useEffectは最初にページが読み込まれた時に呼び出される
   useEffect(() => {
     // asyncで非同期で読み込みとstate更新を定義
     const initialize = async () => {
       // awaitで読み込みが終わるまで待機
-      const newCLs = await loadAll();
-      setCLs(newCLs);
+      const newMemos = await loadChecklist();
+      setMemos(newMemos);
     };
     // 画面が戻ってきた時に動作するようにnavigationの動作に追加
     navigation.addListener("focus", initialize);
@@ -38,11 +38,11 @@ export default function CheckList(props: Props) {
   return (
     <View style={styles.container}>
       <FlatList
-        data={CLs}
+        data={memos}
         renderItem={(item) => (
           <List.Item
             style={styles.item}
-            title={item.item.cl}
+            title={item.item.text}
             descriptionStyle={styles.description}
           />
         )}

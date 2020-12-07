@@ -2,10 +2,10 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { FlatList } from 'react-native-gesture-handler'
-import React , { useEffect, useState } from "react";
-import { loadAll } from "./Store";   
-import { FAB,List } from "react-native-paper"; 
+import { FlatList } from "react-native-gesture-handler";
+import React, { useEffect, useState } from "react";
+import { loadAll, loadChecklist } from "./Store";
+import { FAB, List } from "react-native-paper";
 
 //functionの名前をファイル名とおなじになるように変更
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
@@ -14,18 +14,16 @@ type Props = {
   navigation: MainNavigationProp;
 };
 
-export default function promise(props: Props) {
-  const [memos, setMemos] = useState<memo[]>([]);
+export default function CheckList(props: Props) {
+  const [CLs, setCLs] = useState<Checklistmemo[]>([]);
 
   // useEffectは最初にページが読み込まれた時に呼び出される
   useEffect(() => {
-  
     // asyncで非同期で読み込みとstate更新を定義
     const initialize = async () => {
-    
       // awaitで読み込みが終わるまで待機
-      const newMemos = await loadAll();
-      setMemos(newMemos);
+      const newCLs = await loadChecklist();
+      setCLs(newCLs);
     };
     // 画面が戻ってきた時に動作するようにnavigationの動作に追加
     navigation.addListener("focus", initialize);
@@ -33,31 +31,26 @@ export default function promise(props: Props) {
 
   const { navigation } = props;
 
-  const toContactadd = () => {
-    navigation.navigate("promiseadd");
+  const toCLadd = () => {
+    navigation.navigate("CLadd");
   };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={memos}
-        renderItem={(item)=>(
-<List.Item                                            
-            style={styles.item}                                 
-            title={item.item.text}                                     
-            descriptionStyle={styles.description}                
-          />                                                          
+        data={CLs}
+        renderItem={(item) => (
+          <List.Item
+            style={styles.item}
+            title={item.item.cl}
+            descriptionStyle={styles.description}
+          />
         )}
       />
-      
-      <FAB                                             
-        style={styles.addButton}                       
-        icon="pencil"                                  
-        onPress={toContactadd}                            
-      />                                                    
+
+      <FAB style={styles.addButton} icon="pencil" onPress={toCLadd} />
       <StatusBar style="auto" />
     </View>
-
   );
 }
 
@@ -85,4 +78,3 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
 });
-

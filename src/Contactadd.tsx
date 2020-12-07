@@ -1,12 +1,35 @@
+import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { clsave, Contactsave, save } from "./Store";
+import { TextInput, Button } from "react-native-paper";
 
-export default function Contactadd() {
-  // defaultを削除して名前をComposeに変更
+export default function promiseadd() {
+  const [text, setText] = React.useState("");
+  // 画面遷移の定義
+  const navigation = useNavigation();
+
+  // Main画面に戻る関数を用意
+  const toBack = () => {
+    navigation.goBack();
+  };
+  // 保存ボタンを押した時の関数
+  const onSave = () => {
+    Contactsave(text, Date.now());
+    navigation.goBack();
+  };
   return (
     <View style={styles.container}>
-      <Text>ContactAdd</Text>
+      <TextInput
+        placeholder="メモしたいことを入力してください。"
+        multiline
+        onChangeText={(text) => setText(text)}
+      />
+      <Button onPress={onSave} mode="contained">
+        保存
+      </Button>
+
       <StatusBar style="auto" />
     </View>
   );
