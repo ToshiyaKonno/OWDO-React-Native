@@ -1,3 +1,5 @@
+declare module "*.jpg";
+declare module "*.png";
 //画面が指定した2つ以外に入らないように型を用意
 type RootStackParamList = {
   Main: undefined;//メイン画面
@@ -9,7 +11,6 @@ type RootStackParamList = {
   Contactadd: undefined;//チェックリスト追加画面
   promiseadd: undefined;//チェックリスト追加画面
 };
-
 
 
 
