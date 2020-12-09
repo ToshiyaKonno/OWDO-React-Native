@@ -1,0 +1,213 @@
+import Storage from "react-native-storage";
+import AsyncStorage from "@react-native-community/async-storage";
+import { memo } from "react";
+
+const MEMO_KEY = "MemoInfo";
+
+
+// ストレージの初期化
+const storage = new Storage({
+  size: 1000,
+  storageBackend: AsyncStorage,
+  defaultExpires: 1000 * 3600 * 24, //milliseconds 24時間
+  enableCache: true,
+});
+// 保存処理(ここではお約束)------------------------------
+export const save = (text: string, createdAt: number) => {
+  // 保存する時のキー データを読み取る時の合言葉
+  const key = "memo";
+  storage.save({
+    key: key, // データの合言葉 keyでアンダースコア（"_"）を使用しないでください
+    id: `${createdAt}`, // これがないと常に上書きになってしまう。
+    data: {
+      text: text,
+      createdAt: createdAt,
+    },
+  });
+  alert("お約束を追加しました");
+};
+
+// チェックリストーーーーーーーーーーーーーーーーーー
+export const clsave = (cl: string, time: number) => {
+  // 保存する時のキー データを読み取る時の合言葉
+  const key1 = "checklist";
+  storage.save({
+    key: key1, // データの合言葉 keyでアンダースコア（"_"）を使用しないでください
+    id: `${time}`, // これがないと常に上書きになってしまう。
+    data: {
+      text: cl,
+      createdAt: time,
+    },
+  });
+  alert("チェックリストを追加しました");
+};
+// 連絡先---------------------------------------------
+export const Contactsave = (cl: string, time: number) => {
+  // 保存する時のキー データを読み取る時の合言葉
+  const key2 = "contact";
+  storage.save({
+    key: key2, // データの合言葉 keyでアンダースコア（"_"）を使用しないでください
+    id: `${time}`, // これがないと常に上書きになってしまう。
+    data: {
+      text: cl,
+      createdAt: time,
+    },
+  });
+  alert("連絡先を追加しました");
+};
+
+
+
+
+
+
+
+
+
+// お約束保存
+export const loadAll = async () => {                            
+  const key = "memo";                                           
+  const memos = await storage.getAllDataForKey(key);            
+  return memos;                                                 
+};  
+
+// チェックリスト保存
+export const loadChecklist = async () => {
+  const key1 = "checklist";
+  const memos1 = await storage.getAllDataForKey(key1);
+  return memos1;
+};  
+// 連絡先保存
+export const loadContact = async () => {
+  const key2 = "contact";
+  const memos2 = await storage.getAllDataForKey(key2);
+  return memos2;
+};                                    
+
+
+
+// 削除処理 keyに対応するデータの中からidのデータを削除
+export const removeMemoAsync = async (memos: memo) => {
+  await storage.remove({
+    key: MEMO_KEY,
+    id: `${memos.createdAt}`,
+  });
+};
+
+
+
+
+
+
+----------------------------------------------------------------
+以下チェックリスト
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Button,Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { FlatList } from "react-native-gesture-handler";
+import React, { memo, useEffect, useState } from "react";
+import { loadAll, loadChecklist, removeMemoAsync } from "./Store";
+import { FAB, List } from "react-native-paper";
+// import { loadPictureInfoListAsync, removePictureInfoAsync } from "./Store";
+
+
+//functionの名前をファイル名とおなじになるように変更
+type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
+//Props型を定義
+type Props = {
+  navigation: MainNavigationProp;
+};
+
+export default function promise(props: Props) {
+  const [memos, setMemos] = useState<memo[]>([]);
+
+  // useEffectは最初にページが読み込まれた時に呼び出される
+  useEffect(() => {
+    // asyncで非同期で読み込みとstate更新を定義
+    const initialize = async () => {
+      // awaitで読み込みが終わるまで待機
+      const newMemos = await loadChecklist();
+      setMemos(newMemos);
+    };
+    // 画面が戻ってきた時に動作するようにnavigationの動作に追加
+    navigation.addListener("focus", initialize);
+  });
+
+  const { navigation } = props;
+
+  const toCLadd = () => {
+    navigation.navigate("CLadd");
+  };
+  // 画像情報の削除処理 + 画面更新
+  const removeMemoAndUpdateAsync = async (memos: memo) => {
+    await removeMemoAsync(memos);
+    // updateMemoListAsync();
+  };
+
+  const handleLongPressText = (item: memo) => {
+    Alert.alert(item.text, "この写真のタイトル編集または削除ができます。", [
+      {
+        text: "キャンセル",
+        style: "cancel",
+      },
+      // ココから追加
+      {
+        text: "タイトル編集",
+        onPress: () => {
+          navigation.navigate("CLedit", { memo: item });
+        },
+      },
+      // ココまで追加
+      {
+        text: "削除",
+        onPress: () => {
+          removeMemoAndUpdateAsync(item);
+        },
+      },
+    ]);
+  };
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={memos}
+        renderItem={(item) => (
+          <List.Item
+            style={styles.item}
+            title={item.item.text}
+            descriptionStyle={styles.description}
+          />
+        )}
+      />
+
+      <FAB style={styles.addButton} icon="pencil" onPress={toCLadd} />
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffff00",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  item: {
+    minWidth: "100%",
+    flexDirection: "column",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 10,
+  },
+  addButton: {
+    position: "absolute",
+    right: 16,
+    bottom: 16,
+  },
+  description: {
+    flex: 1,
+    textAlign: "right",
+  },
+});

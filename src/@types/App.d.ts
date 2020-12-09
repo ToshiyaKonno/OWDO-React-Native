@@ -10,6 +10,7 @@ type RootStackParamList = {
   CLadd: undefined;//チェックリスト追加画面
   Contactadd: undefined;//チェックリスト追加画面
   promiseadd: undefined;//チェックリスト追加画面
+  CLedit: undefined;//チェックリスト追加画面
 };
 
 

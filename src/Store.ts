@@ -1,5 +1,8 @@
 import Storage from "react-native-storage";
 import AsyncStorage from "@react-native-community/async-storage";
+import { memo } from "react";
+
+const MEMO_KEY = "MemoInfo";
 
 // ストレージの初期化
 const storage = new Storage({
@@ -8,7 +11,7 @@ const storage = new Storage({
   defaultExpires: 1000 * 3600 * 24, //milliseconds 24時間
   enableCache: true,
 });
-// 保存処理(ここではお約束)
+// 保存処理(ここではお約束)------------------------------
 export const save = (text: string, createdAt: number) => {
   // 保存する時のキー データを読み取る時の合言葉
   const key = "memo";
@@ -37,6 +40,7 @@ export const clsave = (cl: string, time: number) => {
   });
   alert("チェックリストを追加しました");
 };
+// 連絡先---------------------------------------------
 export const Contactsave = (cl: string, time: number) => {
   // 保存する時のキー データを読み取る時の合言葉
   const key2 = "contact";
@@ -51,30 +55,30 @@ export const Contactsave = (cl: string, time: number) => {
   alert("連絡先を追加しました");
 };
 
-
-
-
-
-
-
-
-
 // お約束保存
-export const loadAll = async () => {                            
-  const key = "memo";                                           
-  const memos = await storage.getAllDataForKey(key);            
-  return memos;                                                 
-};  
+export const loadAll = async () => {
+  const key = "memo";
+  const memos = await storage.getAllDataForKey(key);
+  return memos;
+};
 
 // チェックリスト保存
 export const loadChecklist = async () => {
   const key1 = "checklist";
   const memos1 = await storage.getAllDataForKey(key1);
   return memos1;
-};  
+};
 // 連絡先保存
 export const loadContact = async () => {
   const key2 = "contact";
   const memos2 = await storage.getAllDataForKey(key2);
   return memos2;
-};                                                                                                                          
+};
+
+// 削除処理 keyに対応するデータの中からidのデータを削除
+export const removeMemoAsync = async (memos: memo) => {
+  await storage.remove({
+    key: MEMO_KEY,
+    id: `${memos.createdAt}`,
+  });
+};

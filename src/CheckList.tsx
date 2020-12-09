@@ -1,11 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { FlatList } from "react-native-gesture-handler";
-import React, { useEffect, useState } from "react";
-import { loadAll, loadChecklist } from "./Store";
+import React, { memo, useEffect, useState } from "react";
+import { loadAll, loadChecklist, removeMemoAsync } from "./Store";
 import { FAB, List } from "react-native-paper";
+// import { loadPictureInfoListAsync, removePictureInfoAsync } from "./Store";
 
 //functionの名前をファイル名とおなじになるように変更
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
@@ -33,6 +34,34 @@ export default function promise(props: Props) {
 
   const toCLadd = () => {
     navigation.navigate("CLadd");
+  };
+  // 画像情報の削除処理 + 画面更新
+  const removeMemoAndUpdateAsync = async (memos: memo) => {
+    await removeMemoAsync(memos);
+    // updateMemoListAsync();
+  };
+
+  const handleLongPressText = (item: memo) => {
+    Alert.alert(item.text, "この写真のタイトル編集または削除ができます。", [
+      {
+        text: "キャンセル",
+        style: "cancel",
+      },
+      // // ココから追加
+      // {
+      //   text: "タイトル編集",
+      //   onPress: () => {
+      //     navigation.navigate("CLedit", { memo: item });
+      //   },
+      // },
+      // // ココまで追加
+      {
+        text: "削除",
+        onPress: () => {
+          removeMemoAndUpdateAsync(item);
+        },
+      },
+    ]);
   };
 
   return (
