@@ -11,14 +11,11 @@ import { Item } from "react-native-paper/lib/typescript/src/components/Drawer/Dr
 
 
 let LF = "test";
-// const imgArray = [petbottle,tuna]
 const imgArray = [
   require("../assets/images/petbottole.jpg"),
   require("../assets/images/tuna.jpg"),
 ];
-// let imgNum = 1;
-// imgNum = imgArray.length
-// let [count, setCount] = useState(100);
+
 
 
 //functionの名前をファイル名とおなじになるように変更
@@ -37,9 +34,7 @@ export default function lifeHack() {
         }}
       />
 
-      {/* {
-          setCount((current) => current - 1);
-        } */}
+      
       <RNPickerSelect
         onValueChange={(value: number) => setImgNum(value)}
         items={[

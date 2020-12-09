@@ -18,6 +18,7 @@ export default function promiseadd() {
   const onSave = () => {
     clsave(text, Date.now());
     navigation.goBack();
+
   };
   return (
     <View style={styles.container}>

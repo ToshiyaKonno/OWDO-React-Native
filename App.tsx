@@ -17,6 +17,7 @@ import Contact from './src/Contact';
 import CLadd from './src/CLadd';
 import Contactadd from './src/Contactadd';
 import promiseadd from './src/promiseadd';
+// import CLedit from './src/CLedit';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
