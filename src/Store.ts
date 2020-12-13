@@ -1,11 +1,16 @@
 import Storage from "react-native-storage";
 import AsyncStorage from "@react-native-community/async-storage";
 
+
+const CL_KEY = "checklist";
+const CONTACT_KEY = "contact";
+const PROMISE_KEY = "memo";
+
 // ストレージの初期化
 const storage = new Storage({
   size: 1000,
   storageBackend: AsyncStorage,
-  defaultExpires: 1000 * 3600 * 24, //milliseconds 24時間
+  defaultExpires: null, //milliseconds 24時間 ・・nul変更することで記事が消えなくなる
   enableCache: true,
 });
 // 保存処理(ここではお約束)
@@ -77,4 +82,26 @@ export const loadContact = async () => {
   const key2 = "contact";
   const memos2 = await storage.getAllDataForKey(key2);
   return memos2;
-};                                                                                                                          
+};
+
+// 削除処理 keyに対応するデータの中からidのデータを削除(ここではチェックリスト)
+export const removeMemoInfoAsync = async (memos1: memo) => {
+  await storage.remove({
+    key: CL_KEY,
+    id: `${memos1.createdAt}`,
+  });
+}
+// 削除処理 keyに対応するデータの中からidのデータを削除(ここでは緊急連絡先)
+export const removeContactInfoAsync = async (memos2: memo) => {
+  await storage.remove({
+    key: CONTACT_KEY,
+    id: `${memos2.createdAt}`,
+  });
+}
+// 削除処理 keyに対応するデータの中からidのデータを削除(ここではお約束)
+export const removePromiseInfoAsync = async (memos: memo) => {
+  await storage.remove({
+    key: PROMISE_KEY,
+    id: `${memos.createdAt}`,
+  });
+}

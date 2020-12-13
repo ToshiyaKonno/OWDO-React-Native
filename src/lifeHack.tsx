@@ -9,17 +9,12 @@ import React, { Component, useState } from "react";
 import { Value } from "react-native-reanimated";
 import { Item } from "react-native-paper/lib/typescript/src/components/Drawer/Drawer";
 
-
-let LF = "test";
-// const imgArray = [petbottle,tuna]
+let LH = "test";
 const imgArray = [
   require("../assets/images/petbottole.jpg"),
   require("../assets/images/tuna.jpg"),
 ];
-// let imgNum = 1;
-// imgNum = imgArray.length
-// let [count, setCount] = useState(100);
-
+const imgText = ["ペットボトルで簡易ランタン","ツナ缶でランプ"];
 
 //functionの名前をファイル名とおなじになるように変更
 //<Text>の表示する文字に画面の名前を設定
@@ -27,19 +22,15 @@ export default function lifeHack() {
   const [imgNum, setImgNum] = useState(0);
   return (
     <View style={styles.container}>
-      <Text>{LF}</Text>
+      {/* <Text>{LH}</Text> */}
       <Image
         source={imgArray[imgNum]}
         style={{
-          width: 200,
-          height: 200,
+          width: 300,
+          height: 300,
           resizeMode: "contain",
         }}
       />
-
-      {/* {
-          setCount((current) => current - 1);
-        } */}
       <RNPickerSelect
         onValueChange={(value: number) => setImgNum(value)}
         items={[

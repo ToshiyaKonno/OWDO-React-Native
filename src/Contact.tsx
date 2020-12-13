@@ -1,10 +1,10 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Alert,TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { FlatList } from "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
-import { loadAll, loadChecklist, loadContact } from "./Store";
+import { loadChecklist, loadContact,removeContactInfoAsync } from "./Store";
 import { FAB, List } from "react-native-paper";
 
 //functionの名前をファイル名とおなじになるように変更
@@ -35,16 +35,50 @@ export default function Contact(props: Props) {
     navigation.navigate("Contactadd");
   };
 
+  //--------------------以下消去--------------------------------------
+  // 画像リストをストレージから読み込み、更新する
+  const updateContactInfoListAsync = async () => {
+    const newMemoInfoList = await loadContact();
+    // .reverse()を追加
+    setMemos(newMemoInfoList.reverse());
+  };
+
+  // 消去する処理
+  const handleLongPressPicture = (item: memo) => {
+    Alert.alert(item.text, "この写真の削除ができます。", [
+      {
+        text: "キャンセル",
+        style: "cancel",
+      },
+      {
+        text: "削除",
+        onPress: () => {
+          removeContactInfoAndUpdateAsync(item);
+        },
+      },
+    ]);
+  };
+
+  //-------------------------上記消去機能---------------------------------
+  const removeContactInfoAndUpdateAsync = async (memo: memo) => {
+    await removeContactInfoAsync(memo);
+    updateContactInfoListAsync();
+  };
+
+
   return (
     <View style={styles.container}>
       <FlatList
         data={memos}
-        renderItem={(item) => (
-          <List.Item
-            style={styles.item}
-            title={item.item.text}
-            descriptionStyle={styles.description}
-          />
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={({ item }: { item: memo }) => (
+          <TouchableOpacity onLongPress={() => handleLongPressPicture(item)}>
+            <List.Item
+              style={styles.item}
+              title={item.text}
+              descriptionStyle={styles.description}
+            />
+          </TouchableOpacity>
         )}
       />
 

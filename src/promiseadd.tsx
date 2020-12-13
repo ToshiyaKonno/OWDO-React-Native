@@ -36,7 +36,7 @@ export default function promiseadd() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffff00",
     alignItems: "center",
     justifyContent: "center",
   },
